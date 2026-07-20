@@ -1,0 +1,13 @@
+<!-- prettier-ignore -->
+
+{% extends 'base.html' %} {% block title %}Register | Fresh Cart{% endblock %}
+{% block content %}
+
+<h1>Create an Account</h1>
+<form method="POST">
+  <input name="username" placeholder="Username" required />
+  <input name="password" type="password" placeholder="Password" required />
+  <button type="submit">Register</button>
+</form>
+
+<p>{% endblock %}</p>

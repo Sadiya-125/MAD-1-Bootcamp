@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Fresh Cart{% endblock %}</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="{{ url_for('home') }}" class="brand">Fresh Cart</a>
+
+      <div class="nav-links">
+        {% if session.user_id %}
+        <span>Hi, {{ session.username }}!</span>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+      </div>
+    </nav>
+    <main class="container">
+      {% with messages = get_flashed_messages() %}
+      {% for m in messages %}
+      <div class="flash">{{ m }}</div>
+      {% endfor %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
