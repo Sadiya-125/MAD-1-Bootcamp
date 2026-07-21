@@ -12,6 +12,13 @@
       <div class="nav-links">
         {% if session.user_id %}
         <span>Hi, {{ session.username }}!</span>
+
+        <!-- Convert to a Javascript Window Alert -->
+
+        {% if session.is_admin %}
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        {% endif %}
+
         <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
         <a href="{{ url_for('login') }}">Login</a>
@@ -20,12 +27,9 @@
       </div>
     </nav>
     <main class="container">
-      {% with messages = get_flashed_messages() %}
-      {% for m in messages %}
+      {% with messages = get_flashed_messages() %} {% for m in messages %}
       <div class="flash">{{ m }}</div>
-      {% endfor %}
-      {% endwith %}
-      {% block content %}{% endblock %}
+      {% endfor %} {% endwith %} {% block content %}{% endblock %}
     </main>
   </body>
 </html>

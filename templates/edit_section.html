@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Edit Section</h1>
+<form method="POST">
+  <input name="name" value="{{ section.name }}" required />
+  <input name="description" value="{{ section.description }}" />
+  <button type="submit">Update</button>
+</form>
+
+{% endblock %}

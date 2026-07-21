@@ -9,11 +9,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///freshcart.db'
 app.config['SECRET_KEY'] = 'freshcart-secret'
 db.init_app(app)
 
-@app.route('/')
-def home():
-    sections = Section.query.all()
-    return render_template('home.html', sections=sections)
-
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -22,6 +17,55 @@ def login_required(f):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return wrapper
+
+@app.route('/')
+@login_required
+def home():
+    sections = Section.query.all()
+    return render_template('home.html', sections=sections)
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get('is_admin'):
+            flash("Admins Only!")
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return wrapper
+
+@app.route('/admin') # READ
+@admin_required
+def admin_dashboard():
+    sections = Section.query.all()
+    return render_template('admin_dashboard.html', sections=sections)
+
+@app.route('/section/add', methods=['GET', 'POST']) # CREATE
+@admin_required
+def add_section():
+    if request.method == 'POST':
+        db.session.add(Section(name=request.form['name'], description=request.form['description']))
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+    return render_template('add_section.html')
+
+@app.route('/section/edit/<int:id>', methods=['GET', 'POST']) # UPDATE
+@admin_required
+def edit_section(id):
+    section = Section.query.get_or_404(id)
+    if request.method == 'POST':
+        section.name = request.form['name']
+        section.description = request.form['description']
+
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+    return render_template('edit_section.html', section=section)
+
+@app.route('/section/delete/<int:id>') # DELETE
+@admin_required
+def delete_section(id):
+    db.session.delete(Section.query.get_or_404(id))
+    db.session.commit()
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
