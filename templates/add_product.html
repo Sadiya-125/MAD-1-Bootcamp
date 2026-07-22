@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Add Product to {{ section.name }}</h1>
+<form method="POST">
+  <input name="name" placeholder="Product Name" required />
+  <input
+    name="price"
+    type="number"
+    step="0.01"
+    placeholder="Product Price"
+    required
+  />
+  <input name="units" placeholder="Units (k.g., L, pack, etc)" />
+  <input name="stock" type="number" placeholder="Stock Quantity" value="0" />
+
+  <button type="submit">Save</button>
+</form>
+
+{% endblock %}

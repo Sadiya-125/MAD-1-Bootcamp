@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-from models import db, Section, User
+from models import db, Section, User, Products
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -64,6 +64,38 @@ def edit_section(id):
 @admin_required
 def delete_section(id):
     db.session.delete(Section.query.get_or_404(id))
+    db.session.commit()
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/section/<int:section_id>/product/add', methods=['GET', 'POST']) # CREATE
+@admin_required
+def add_product(section_id):
+    section = Section.query.get_or_404(section_id)
+    if request.method == 'POST':
+        db.session.add(Products(name=request.form['name'], price=float(request.form['price']), units=request.form['units'], stock=request.form['stock'], section_id=section.id))
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+    return render_template('add_product.html', section=section)
+
+@app.route('/product/edit/<int:id>', methods=['GET', 'POST']) # UPDATE
+@admin_required
+def edit_product(id):
+    product = Products.query.get_or_404(id)
+    if request.method == 'POST':
+        product.name = request.form['name']
+        product.price = float(request.form['price'])
+        product.units = request.form['units']
+        product.stock = int(request.form['stock'])
+
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('edit_product.html', product=product)
+
+@app.route('/product/delete/<int:id>') # DELETE
+@admin_required
+def delete_product(id):
+    db.session.delete(Products.query.get_or_404(id))
     db.session.commit()
     return redirect(url_for('admin_dashboard'))
 
