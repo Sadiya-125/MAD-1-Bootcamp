@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Results for "{{ query }}"</h1>
+<input type="text" id="filter" placeholder="Filter These Results..." />
+
+<table id="results">
+  <tr>
+    <th>Product</th>
+    <th>Section</th>
+    <th>Price</th>
+  </tr>
+  {% for p in results %}
+  <tr>
+    <td>{{ p.name }}</td>
+    <td>{{ p.section.name }}</td>
+    <td>{{ p.price }} / {{ p.units }}</td>
+  </tr>
+  {% else %}
+  <tr>
+    <td colspan="3">No Products Found</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<!-- Javascript for the Filter Implementation -->
+<script>
+  const box = document.getElementById("filter");
+  box.addEventListener("keyup", () => {
+    const term = box.value.toLowerCase();
+    document
+      .querySelectorAll("#results tr:not(:first-child)")
+      .forEach((row) => {
+        row.style.display = row.innerText.toLowerCase().includes(term)
+          ? ""
+          : "none";
+      });
+  });
+</script>
+
+{% endblock %}

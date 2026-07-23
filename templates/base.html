@@ -4,12 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Fresh Cart{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
     <nav class="navbar">
       <a href="{{ url_for('home') }}" class="brand">Fresh Cart</a>
 
       <div class="nav-links">
+        <form action="{{ url_for('search') }}" method="get" class="search-form">
+          <input type="text" name="q" placeholder="Search Products..." />
+          <button type="submit">Go</button>
+        </form>
+
         {% if session.user_id %}
         <span>Hi, {{ session.username }}!</span>
 

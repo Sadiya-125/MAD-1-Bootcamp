@@ -99,6 +99,12 @@ def delete_product(id):
     db.session.commit()
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/search')
+def search():
+    q = request.args.get('q', '').strip()
+    results = (Products.query.filter(Products.name.ilike(f'%{q}%')).all() if q else [])
+    return render_template('search.html', results=results, query=q)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
